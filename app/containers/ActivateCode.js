@@ -89,13 +89,13 @@ export default class ActivateCode extends Component {
             Tài khoản telegram
           </Text>
 
-          <View style={{height: 32, flex: 1, borderRadius: 4, borderWidth: 1, borderColor: 'rgb(44,62,80)',
+          <View style={{height: 40, flex: 1, borderRadius: 4, borderWidth: 1, borderColor: 'rgb(44,62,80)',
             paddingHorizontal: 12, alignItems:'center', flexDirection: 'row'}}>
-            <Text style={{fontSize: 16,  color: 'rgb(44,62,80)', fontFamily: 'Avenir-Book'}}>
+            <Text style={{fontSize: 14,  color: 'rgb(44,62,80)', fontFamily: 'Avenir-Book'}}>
               @
             </Text>
             <TextInput
-              style={{marginLeft: 12, flex: 1}}
+              style={{marginLeft: 12, flex: 1, fontSize: 14,  color: 'rgb(44,62,80)', fontFamily: 'Avenir-Book'}}
               multiline={false}
               onChangeText={(text) => this.setState({
                 account: text
@@ -111,8 +111,8 @@ export default class ActivateCode extends Component {
           </Text>
 
           <TextInput
-            style={{height: 32, flex: 1, borderRadius: 4, borderWidth: 1, borderColor: 'rgb(44,62,80)',
-              paddingHorizontal: 12, justifyContent:'center'}}
+            style={{height: 40, flex: 1, borderRadius: 4, borderWidth: 1, borderColor: 'rgb(44,62,80)',
+              paddingHorizontal: 12, justifyContent:'center', fontSize: 14,  color: 'rgb(44,62,80)', fontFamily: 'Avenir-Book'}}
             multiline={false}
             onChangeText={(text) => this.setState({
               inputCode: text
@@ -129,7 +129,7 @@ export default class ActivateCode extends Component {
         }
 
         <TouchableOpacity
-          style={{width: 100, height: 32, marginTop: 30, borderRadius: 4,
+          style={{width: 100, height: 40, marginTop: 30, borderRadius: 4,
           backgroundColor: '#053856', alignItems: 'center', justifyContent:'center'}}
           onPress={() => this._onPressActivate()}
         >

@@ -9,20 +9,25 @@ const Home = createDrawerNavigator({
   tool: {
     screen: Tool
   },
-  guide: {
-    screen: Guide,
-  },
-  contactUs: {
-    screen: ContactUs,
-  },
   signal: {
     screen: Signals,
   },
+  guide: {
+    screen: Guide,
+  },
   payment: {
     screen: Payment,
+  },
+  contactUs: {
+    screen: ContactUs,
   }
 }, {
   initialRouteName: 'tool',
+  drawerBackgroundColor: '#F6F6F6',
+  contentOptions: {
+    inactiveLabelStyle: {fontSize: 18, color: 'rgb(44,62,80)', fontFamily: 'Avenir-Book'},
+    activeLabelStyle: {fontSize: 18, color: '#1f63d1', fontFamily: 'Avenir-Book'}
+  }
 });
 
 export default Home;
