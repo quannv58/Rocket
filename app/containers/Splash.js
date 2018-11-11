@@ -3,11 +3,21 @@ import {
   View,
   Image
 } from 'react-native'
+import {getItem} from "../utils/AsynUtils";
+import {IS_ACCOUNT_ACTIVATED} from "../utils/Constants";
 
 export default class Splash extends Component {
 
   componentDidMount() {
-   setTimeout(() => this.props.navigation.navigate('activateCodeNavigator'), 2000)
+    getItem(IS_ACCOUNT_ACTIVATED).then((isActivated) => {
+      if (isActivated === 'true') {
+        setTimeout(() => this.props.navigation.navigate('homeNavigator'), 2000)
+      } else {
+        setTimeout(() => this.props.navigation.navigate('activateCodeNavigator'), 2000)
+      }
+    }).catch((err) => {
+      setTimeout(() => this.props.navigation.navigate('activateCodeNavigator'), 2000)
+    })
   }
 
   render () {

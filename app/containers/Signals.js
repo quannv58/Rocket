@@ -5,10 +5,10 @@ import {
 } from 'react-native'
 import CustomHeader from '../conponents/CustomHeader'
 
-export default class Guide extends Component {
+export default class Signals extends Component {
 
   static navigationOptions = {
-    drawerLabel: 'Hướng dẫn'
+    drawerLabel: 'Tín hiệu'
   };
 
   render () {
@@ -17,12 +17,12 @@ export default class Guide extends Component {
       <View style={{flex: 1, flexDirection: 'column', backgroundColor: '#f2f4f7'}}>
         <CustomHeader
           icon={'menu'}
-          title={'Hướng dẫn'}
+          title={'Tín hiệu'}
           onButtonPress={() => this.props.navigation.openDrawer()}
         />
 
         <WebView
-          source={{uri: 'http://167.179.65.85/guide.html'}}
+          source={{uri: 'http://167.179.65.85/signal.html'}}
           style={{margin: 12, flex: 1, height: '100%', backgroundColor: '#f2f4f7',}}
           scalesPageToFit={true}
           injectedJavaScript={INJECTEDJAVASCRIPT}

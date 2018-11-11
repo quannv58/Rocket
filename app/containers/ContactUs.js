@@ -8,7 +8,7 @@ import CustomHeader from '../conponents/CustomHeader'
 export default class ContactUs extends Component {
 
   static navigationOptions = {
-    drawerLabel: 'Contact Us'
+    drawerLabel: 'Liên hệ'
   };
 
   render () {
@@ -17,7 +17,7 @@ export default class ContactUs extends Component {
       <View style={{flex: 1, flexDirection: 'column', backgroundColor: '#f2f4f7'}}>
         <CustomHeader
           icon={'menu'}
-          title={'Contact Us'}
+          title={'Liên hệ'}
           onButtonPress={() => this.props.navigation.openDrawer()}
         />
 

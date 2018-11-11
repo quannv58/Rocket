@@ -7,6 +7,8 @@ import {
   TouchableOpacity
 } from 'react-native'
 import axios from "react-native-axios";
+import {saveItem} from "../utils/AsynUtils";
+import {IS_ACCOUNT_ACTIVATED} from "../utils/Constants";
 
 export default class ActivateCode extends Component {
 
@@ -15,6 +17,7 @@ export default class ActivateCode extends Component {
     this.state={
       codes: [],
       inputCode: '',
+      account: '',
       isInvalidCode: false
     }
   }
@@ -32,16 +35,35 @@ export default class ActivateCode extends Component {
       });
   }
 
+  _checkValidation() {
+    const {
+      codes,
+      inputCode,
+      account
+    } = this.state
+    for (var index in codes) {
+      console.log(codes[index])
+      if (codes[index].telegramId && codes[index].telegramId.toLowerCase() === account.toLowerCase() &&
+        codes[index].code && codes[index].code.toLowerCase() === inputCode.toLowerCase()) {
+        return true
+      }
+    }
+    return false
+  }
+
   _onPressActivate() {
     const {
       codes,
-      inputCode
+      inputCode,
+      account
     } = this.state
 
-    if (codes.length !== 0 && inputCode.length !== 0 && codes.includes(inputCode)) {
+    if (codes.length !== 0 && inputCode.length !== 0 && account.length !== 0 && this._checkValidation()) {
+      console.log('valid')
       this.setState({
         isInvalidCode: false
       })
+      saveItem(IS_ACCOUNT_ACTIVATED, 'true')
       this.props.navigation.navigate('homeNavigator')
     } else {
       this.setState({
@@ -59,23 +81,50 @@ export default class ActivateCode extends Component {
         />
 
         <Text style={{fontSize: 16,  color: 'rgb(44,62,80)', fontFamily: 'Avenir-Book', marginTop: 30}}>
-          Enter the activation code
+          Nhập mã kích hoạt
         </Text>
 
-        <TextInput
-          style={{height: 32, width: 200, borderRadius: 4, borderWidth: 1, borderColor: 'rgb(44,62,80)',
-            paddingHorizontal: 12, justifyContent:'center', marginTop: 30}}
-          multiline={false}
-          onChangeText={(text) => this.setState({
-            inputCode: text
-          })}
-          value={this.state.inputCode}
-        />
+        <View style={{height: 40, width: '90%', flexDirection: 'row', alignItems:'center', margin: 30}}>
+          <Text style={{fontSize: 16,  color: 'rgb(44,62,80)', fontFamily: 'Avenir-Book', flex: 1}}>
+            Tài khoản telegram
+          </Text>
+
+          <View style={{height: 32, flex: 1, borderRadius: 4, borderWidth: 1, borderColor: 'rgb(44,62,80)',
+            paddingHorizontal: 12, alignItems:'center', flexDirection: 'row'}}>
+            <Text style={{fontSize: 16,  color: 'rgb(44,62,80)', fontFamily: 'Avenir-Book'}}>
+              @
+            </Text>
+            <TextInput
+              style={{marginLeft: 12, flex: 1}}
+              multiline={false}
+              onChangeText={(text) => this.setState({
+                account: text
+              })}
+              value={this.state.account}
+            />
+          </View>
+        </View>
+
+        <View style={{height: 40, width: '90%', flexDirection: 'row', alignItems:'center'}}>
+          <Text style={{fontSize: 16,  color: 'rgb(44,62,80)', fontFamily: 'Avenir-Book', flex: 1}}>
+            Mã kích hoạt
+          </Text>
+
+          <TextInput
+            style={{height: 32, flex: 1, borderRadius: 4, borderWidth: 1, borderColor: 'rgb(44,62,80)',
+              paddingHorizontal: 12, justifyContent:'center'}}
+            multiline={false}
+            onChangeText={(text) => this.setState({
+              inputCode: text
+            })}
+            value={this.state.inputCode}
+          />
+        </View>
 
         {
           this.state.isInvalidCode &&
           <Text style={{fontSize: 12, color: 'red', fontFamily: 'Avenir-Book', marginTop: 8}}>
-            Invalid code!
+            Tài khoản hoặc mã không hợp lệ!
           </Text>
         }
 
@@ -85,7 +134,7 @@ export default class ActivateCode extends Component {
           onPress={() => this._onPressActivate()}
         >
           <Text style={{fontSize: 16, color: 'white', fontFamily: 'Avenir-Book'}}>
-            Activate
+            Kích hoạt
           </Text>
         </TouchableOpacity>
       </View>
