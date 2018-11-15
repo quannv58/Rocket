@@ -3,11 +3,17 @@ import Tool from '../containers/Tool'
 import Guide from '../containers/Guide'
 import Payment from '../containers/Payment'
 import Signals from '../containers/Signals'
+import RocketVIP from '../containers/RocketVIP'
+import Forex from '../containers/Forex'
+
 import {createDrawerNavigator} from "react-navigation";
 
 const Home = createDrawerNavigator({
   tool: {
     screen: Tool
+  },
+  forex: {
+    screen: Forex
   },
   signal: {
     screen: Signals,
@@ -20,6 +26,9 @@ const Home = createDrawerNavigator({
   },
   contactUs: {
     screen: ContactUs,
+  },
+  rocketVip: {
+    screen: RocketVIP
   }
 }, {
   initialRouteName: 'tool',

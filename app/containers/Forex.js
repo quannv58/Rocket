@@ -8,16 +8,8 @@ import {
 } from 'react-native'
 import CustomHeader from '../conponents/CustomHeader'
 import axios from 'react-native-axios'
-import {getItem} from '../utils/AsynUtils'
-import {
-  ACCOUNT_VIP_0,
-  ACCOUNT_VIP_1,
-  ACCOUNT_VIP_2,
-  ACCOUNT_VIP_3,
-  TYPE_VIP_ACCOUNT
-} from "../utils/Constants";
 
-export default class Tool extends Component {
+export default class Forex extends Component {
   constructor(props) {
     super(props)
     this.state={
@@ -27,43 +19,24 @@ export default class Tool extends Component {
   }
 
   static navigationOptions = {
-    drawerLabel: 'Tool'
+    drawerLabel: 'Forex'
   };
 
   componentWillMount() {
-    getItem(TYPE_VIP_ACCOUNT).then((value) => {
-      let url = ''
-      switch (value) {
-        case ACCOUNT_VIP_0:
-          url = 'http://167.179.65.85/rocket.json'
-          break
-        case ACCOUNT_VIP_1:
-          url = 'http://167.179.65.85/rocket_vip1.json'
-          break
-        case ACCOUNT_VIP_2:
-          url = 'http://167.179.65.85/rocket_vip2.json'
-          break
-        case ACCOUNT_VIP_3:
-          url = 'http://167.179.65.85/rocket_vip3.json'
-          break
+    axios.get('http://167.179.65.85/forex.json', {
+      headers: {
+        'Cache-Control': 'no-cache'
       }
-      axios.get(url, {
-        headers: {
-          'Cache-Control': 'no-cache'
-        }
-      })
-        .then((response) => {
-          console.log('response: ', response);
-          console.log('selected: ', response.data[0]);
-          this.setState({
-            items: response.data,
-            selectedItem: response.data[0]
-          })
-        })
-        .catch((error) => {
-          console.log(error);
-        });
     })
+      .then((response) => {
+        this.setState({
+          items: response.data,
+          selectedItem: response.data[0]
+        })
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   _isItemSelected(item) {
@@ -98,7 +71,7 @@ export default class Tool extends Component {
       <View style={{flex: 1, flexDirection: 'column', backgroundColor: '#f2f4f7'}}>
         <CustomHeader
           icon={'menu'}
-          title={'Tool'}
+          title={'Forex'}
           onButtonPress={() => this.props.navigation.openDrawer()}
         />
 

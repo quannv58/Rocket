@@ -4,20 +4,41 @@ import {
   Image
 } from 'react-native'
 import {getItem} from "../utils/AsynUtils";
-import {IS_ACCOUNT_ACTIVATED} from "../utils/Constants";
+import {ACCOUNT_ACTIVATE} from "../utils/Constants";
+import axios from "react-native-axios";
 
 export default class Splash extends Component {
 
-  componentDidMount() {
-    getItem(IS_ACCOUNT_ACTIVATED).then((isActivated) => {
-      if (isActivated === 'true') {
-        setTimeout(() => this.props.navigation.navigate('homeNavigator'), 2000)
-      } else {
-        setTimeout(() => this.props.navigation.navigate('activateCodeNavigator'), 2000)
+  _isAccountAvailable(account, activeUsers) {
+    for (var index in activeUsers) {
+      if (activeUsers[index].toLowerCase() === account.toLowerCase()) {
+        return true
       }
-    }).catch((err) => {
-      setTimeout(() => this.props.navigation.navigate('activateCodeNavigator'), 2000)
+    }
+    return false
+  }
+
+  componentWillMount() {
+    axios.get('http://167.179.65.85/live_user.json', {
+      headers: {
+        'Cache-Control': 'no-cache'
+      }
     })
+      .then((response) => {
+        const activeUsers = response.data
+        getItem(ACCOUNT_ACTIVATE).then((account) => {
+          if (this._isAccountAvailable(account, activeUsers)) {
+            setTimeout(() => this.props.navigation.navigate('homeNavigator'), 2000)
+          } else {
+            setTimeout(() => this.props.navigation.navigate('activateCodeNavigator'), 2000)
+          }
+        }).catch((err) => {
+          setTimeout(() => this.props.navigation.navigate('activateCodeNavigator'), 2000)
+        })
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   render () {

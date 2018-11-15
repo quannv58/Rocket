@@ -15,7 +15,7 @@ export default class CustomHeader extends Component {
     } = this.props
 
     return (
-      <View style={{height: 40, marginTop: 16, backgroundColor: '#F6F6F6'}}>
+      <View style={{height: 40, marginTop: 16, backgroundColor: '#F6F6F6', width: '100%'}}>
         <View style={{position: 'absolute', top: 0, left: 0, right: 0, bottom:0, justifyContent: 'center', alignItems: 'center'}}>
           <Text style={{fontSize: 16,  color: 'rgb(44,62,80)', fontFamily: 'Avenir-Book' }}>
             {title}

@@ -7,8 +7,16 @@ import {
   TouchableOpacity
 } from 'react-native'
 import axios from "react-native-axios";
-import {saveItem} from "../utils/AsynUtils";
-import {IS_ACCOUNT_ACTIVATED} from "../utils/Constants";
+import {saveItem, getItem} from "../utils/AsynUtils";
+import {
+  ACCOUNT_ACTIVATE,
+  TYPE_VIP_ACCOUNT,
+  ACCOUNT_VIP_0,
+  ACCOUNT_VIP_1,
+  ACCOUNT_VIP_2,
+  ACCOUNT_VIP_3
+} from "../utils/Constants";
+import CustomHeader from '../conponents/CustomHeader'
 
 export default class ActivateCode extends Component {
 
@@ -18,16 +26,48 @@ export default class ActivateCode extends Component {
       codes: [],
       inputCode: '',
       account: '',
-      isInvalidCode: false
+      isInvalidCode: false,
+      vipAccounts: {},
+      isLoggedIn: false,
+      isShowError: false,
+      errorMessage: ''
     }
   }
 
   componentWillMount() {
-    axios.get('http://167.179.65.85/active_code.json')
+    console.log('componentWillMount')
+    getItem(ACCOUNT_ACTIVATE).then((value) => {
+      console.log('value', value)
+      if (value && value.length !== 0) {
+        this.setState({
+          isLoggedIn: true
+        })
+      }
+    })
+    axios.get('http://167.179.65.85/active_code.json', {
+      headers: {
+        'Cache-Control': 'no-cache'
+      }
+    })
       .then((response) => {
         console.log('response: ', response);
         this.setState({
           codes: response.data
+        })
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    axios.get('http://167.179.65.85/vip.json', {
+      headers: {
+        'Cache-Control': 'no-cache'
+      }
+    })
+      .then((response) => {
+        console.log('response: ', response);
+        this.setState({
+          vipAccounts: response.data
         })
       })
       .catch((error) => {
@@ -51,6 +91,76 @@ export default class ActivateCode extends Component {
     return false
   }
 
+  _isVipAccount() {
+    const {
+      account,
+      vipAccounts
+    } = this.state
+
+    for (var index in vipAccounts.vip1) {
+      if (vipAccounts.vip1[index].toLowerCase() === account.toLowerCase()) {
+        return ACCOUNT_VIP_1
+      }
+    }
+
+    for (var index in vipAccounts.vip2) {
+      if (vipAccounts.vip2[index].toLowerCase() === account.toLowerCase()) {
+        return ACCOUNT_VIP_2
+      }
+    }
+
+    for (var index in vipAccounts.vip3) {
+      if (vipAccounts.vip3[index].toLowerCase() === account.toLowerCase()) {
+        return ACCOUNT_VIP_3
+      }
+    }
+    return ACCOUNT_VIP_0
+  }
+
+  _moveToHomePage() {
+    this.setState({
+      isShowError: false,
+      errorMessage: ''
+    })
+    saveItem(ACCOUNT_ACTIVATE, this.state.account)
+    saveItem(TYPE_VIP_ACCOUNT, this._isVipAccount()).then(() => {
+      this.props.navigation.navigate('homeNavigator')
+    })
+  }
+
+  _renderErrorPopup() {
+    return(
+      <View style={{
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(0,0,0,0.5)'
+      }}>
+        <View style={{width: 250, height: 150, backgroundColor: 'white', borderRadius: 5, paddingHorizontal: 24,
+          paddingVertical: 30, alignItems: 'center'}}>
+          <Text style={{fontSize: 16, color: 'rgb(44,62,80)'}}>
+            {this.state.errorMessage}
+          </Text>
+
+          <TouchableOpacity
+            style={{width: 100, height: 32, backgroundColor: '#053856', borderRadius: 5,
+              alignItems: 'center', justifyContent: 'center', marginTop: 24}}
+            onPress={() => this._moveToHomePage()}
+          >
+            <Text style={{fontSize: 16, color: '#ffffff'}}>
+              OK
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+
   _onPressActivate() {
     const {
       codes,
@@ -59,12 +169,11 @@ export default class ActivateCode extends Component {
     } = this.state
 
     if (codes.length !== 0 && inputCode.length !== 0 && account.length !== 0 && this._checkValidation()) {
-      console.log('valid')
       this.setState({
-        isInvalidCode: false
+        isInvalidCode: false,
+        isShowError: true,
+        errorMessage: this.state.isLoggedIn ? 'Nâng cấp thành công' : 'Kích hoạt thành công'
       })
-      saveItem(IS_ACCOUNT_ACTIVATED, 'true')
-      this.props.navigation.navigate('homeNavigator')
     } else {
       this.setState({
         isInvalidCode: true
@@ -75,6 +184,14 @@ export default class ActivateCode extends Component {
   render () {
     return (
       <View style={{flex: 1, alignItems: 'center', backgroundColor: '#F6F6F6'}}>
+        {
+          this.state.isLoggedIn &&
+            <CustomHeader
+              icon={'back'}
+              title={'Nâng cấp VIP'}
+              onButtonPress={() => this.props.navigation.goBack()}
+            />
+        }
         <Image
           style={{width: 100, height: 100,marginTop: 60, resizeMode: 'contain'}}
           source={require('../assets/icon/lauch_screen.jpg')}
@@ -137,6 +254,11 @@ export default class ActivateCode extends Component {
             Kích hoạt
           </Text>
         </TouchableOpacity>
+
+        {
+          this.state.isShowError &&
+          this._renderErrorPopup()
+        }
       </View>
     )
   }
