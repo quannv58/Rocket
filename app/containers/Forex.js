@@ -8,6 +8,8 @@ import {
 } from 'react-native'
 import CustomHeader from '../conponents/CustomHeader'
 import axios from 'react-native-axios'
+import {getItem} from "../utils/AsynUtils";
+import {ACCOUNT_VIP_0, ACCOUNT_VIP_1, ACCOUNT_VIP_2, ACCOUNT_VIP_3, TYPE_VIP_ACCOUNT} from "../utils/Constants";
 
 export default class Forex extends Component {
   constructor(props) {
@@ -23,20 +25,37 @@ export default class Forex extends Component {
   };
 
   componentWillMount() {
-    axios.get('http://167.179.65.85/forex.json', {
-      headers: {
-        'Cache-Control': 'no-cache'
+    getItem(TYPE_VIP_ACCOUNT).then((value) => {
+      let url = ''
+      switch (value) {
+        case ACCOUNT_VIP_0:
+          url = 'http://167.179.65.85/forex.json'
+          break
+        case ACCOUNT_VIP_1:
+          url = 'http://167.179.65.85/forex_vip1.json'
+          break
+        case ACCOUNT_VIP_2:
+          url = 'http://167.179.65.85/forex_vip2.json'
+          break
+        case ACCOUNT_VIP_3:
+          url = 'http://167.179.65.85/forex_vip3.json'
+          break
       }
-    })
-      .then((response) => {
-        this.setState({
-          items: response.data,
-          selectedItem: response.data[0]
-        })
+      axios.get(url, {
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+        .then((response) => {
+          this.setState({
+            items: response.data,
+            selectedItem: response.data[0]
+          })
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    })
   }
 
   _isItemSelected(item) {
